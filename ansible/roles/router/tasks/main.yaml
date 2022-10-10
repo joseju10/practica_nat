@@ -1,0 +1,31 @@
+- name: modulo_iptable
+  modprobe:
+    name: iptable_nat
+    state: present
+
+- name: iptable_persistent
+  lineinfile:
+    path: /etc/modules
+    line: iptable_nat
+
+- name: habilitar_forward
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+
+- name: regla_iptable_prerouting
+  command: iptables -t nat -A PREROUTING -p tcp --dport 80 -i eth1 -j DNAT --to 10.0.0.101
+
+- name: regla_iptable_postrouting
+  command: iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o eth1 -j MASQUERADE
+
+- name: instalar_iptables-persistent
+  apt:
+    name: iptables-persistent
+
+- name: eliminar_default
+  command: ip route del default
+
+- name: nuevo_default
+  command: ip route add default via 172.22.0.1

@@ -1,0 +1,6 @@
+- name: Ensure system is updated
+  apt: update_cache=yes upgrade=yes
+
+- name: Clave Publica
+  authorized_key: user=vagrant
+                  key="{{lookup('file','/home/usuario/.ssh/id_rsa.pub')}}"

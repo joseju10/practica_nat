@@ -1,0 +1,5 @@
+- name: eliminar_default
+  command: ip route del default
+
+- name: nuevo_default
+  command: ip route add default via 10.0.0.1
